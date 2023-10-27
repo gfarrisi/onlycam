@@ -8,6 +8,18 @@ import { encodeFunctionData } from "viem";
 import ABI from "../lib/nftABI.json";
 import { ToastContainer, toast } from "react-toastify";
 import { Alert } from "../components/AlertWithLink";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Flex,
+  FormControl,
+  Image,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,6 +30,49 @@ export default function DashboardPage() {
     sendSponsoredUserOperation,
     eoa,
   } = useSmartAccount();
+  const [myFoto, setMyFoto] = useState<string>("");
+  const [fileImage, setFileImage] = useState<File>();
+  const toast = useToast();
+
+  type MimeType = "image/jpeg" | "image/png";
+
+  useEffect(() => {
+    const myPhoto = localStorage.getItem("myPhoto");
+
+    if (myPhoto && typeof myPhoto === "string") {
+      setMyFoto(myPhoto);
+      urltoFile(myPhoto, "myPhotos.jpeg", "image/jpeg").then((file) => {
+        setFileImage(file);
+      });
+    }
+  }, [myFoto]);
+
+  // Convert from base64 format to image file
+  function urltoFile(
+    url: string,
+    filename: string,
+    mimeType: MimeType
+  ): Promise<File> {
+    return fetch(url)
+      .then((res) => {
+        return res.arrayBuffer();
+      })
+      .then((buf) => {
+        return new File([buf], filename, { type: mimeType });
+      });
+  }
+
+  function reSelfie() {
+    router.push({
+      pathname: "/camera",
+    });
+  }
+
+  //css
+  const imageResult = {
+    "border-radius": "50%",
+    "object-fit": "cover",
+  };
 
   // If the user is not authenticated, redirect them back to the landing page
   useEffect(() => {
@@ -92,63 +147,124 @@ export default function DashboardPage() {
   return (
     <>
       <Head>
-        <title>Privy x Base Paymaster Demo</title>
+        <title>OnlyCam</title>
       </Head>
 
-      <main className="flex flex-col min-h-screen px-4 sm:px-20 py-6 sm:py-10 bg-privy-light-blue">
+      <>
         {ready && authenticated && !isLoading ? (
           <>
-            <ToastContainer />
-            <div className="flex flex-row justify-between">
-              <h1 className="text-2xl font-semibold">
-                Privy x Base Paymaster Demo
-              </h1>
-              <button
-                onClick={logout}
-                className="text-sm bg-violet-200 hover:text-violet-900 py-2 px-4 rounded-md text-violet-700"
-              >
-                Logout
-              </button>
-            </div>
-            <div className="mt-12 flex gap-4 flex-wrap">
-              <button
-                onClick={onMint}
-                className="text-sm bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 py-2 px-4 rounded-md text-white"
-                disabled={isLoading || isMinting}
-              >
-                Mint NFT
-              </button>
-            </div>
-            <p className="mt-6 font-bold uppercase text-sm text-gray-600">
-              Your Smart Wallet Address
-            </p>
-            <a
-              className="mt-2 text-sm text-gray-500 hover:text-violet-600"
-              href={`${BASE_GOERLI_SCAN_URL}/address/${smartAccountAddress}#tokentxnsErc721`}
+            <Box
+              bgImage={{ base: "none", md: "/112.png", lg: "/112.png" }}
+              bgPosition="center"
+              bgSize="cover"
+              h="100vh"
             >
-              {smartAccountAddress}
-            </a>
-            <p className="mt-6 font-bold uppercase text-sm text-gray-600">
-              Your Signer Address
-            </p>
-            <a
-              className="mt-2 text-sm text-gray-500 hover:text-violet-600"
-              href={`${BASE_GOERLI_SCAN_URL}/address/${eoa?.address}`}
-            >
-              {eoa?.address}
-            </a>
-            <p className="mt-6 font-bold uppercase text-sm text-gray-600">
-              User object
-            </p>
-            <textarea
-              value={JSON.stringify(user, null, 2)}
-              className="max-w-4xl bg-slate-700 text-slate-50 font-mono p-4 text-xs sm:text-sm rounded-md mt-2"
-              rows={20}
-              disabled
-            />
+              <Center>
+                <Box
+                  maxW="sm"
+                  mt={{ base: "0px", md: "10px", lg: "10px" }}
+                  height={{ base: "100%", md: "50%", lg: "25%" }}
+                  width={{ base: "600px", md: "50%", lg: "25%" }}
+                  borderWidth={{ base: "0px", md: "1px", lg: "1px" }}
+                  bg="teal.400"
+                  justifyContent="center"
+                  overflow="hidden"
+                  borderRadius="lg"
+                  rounded={24}
+                >
+                  <Flex direction="column" background="white" p={30}>
+                    <Box>
+                      <Box h="75px">
+                        <Center>
+                          <img
+                            src="/favicons/icon.svg"
+                            width="70px"
+                            height="70px"
+                            alt="Logo"
+                          />
+                        </Center>
+                      </Box>
+                      <Box mt={10}>
+                        <Center>
+                          <Image
+                            borderRadius="full"
+                            boxSize="60%"
+                            objectPosition="-10% 10%"
+                            src={myFoto.replace("data:image/jpeg;base64,:", "")}
+                            objectFit={"cover"}
+                            style={{
+                              borderRadius: 10,
+                            }}
+                          />
+                        </Center>
+                      </Box>
+                      <FormControl mt={14} mb={4}>
+                        <Stack>
+                          <Text
+                            align={"center"}
+                            fontSize="2xl"
+                            color={"#black"}
+                            as="b"
+                          >
+                            Check your verified selfie
+                          </Text>
+                        </Stack>
+                      </FormControl>
+                      <FormControl mt={4}>
+                        <Stack spacing={0}>
+                          <Text
+                            align={"center"}
+                            fontSize="sm"
+                            color={"#707070"}
+                          >
+                            OnlyCam verifies the
+                          </Text>
+                          <Text
+                            align={"center"}
+                            fontSize="sm"
+                            color={"#707070"}
+                          >
+                            authenticity of your photos.
+                          </Text>
+                        </Stack>
+                      </FormControl>
+                      <FormControl mt={10} mb={10}>
+                        <Center>
+                          <Button
+                            colorScheme="blue"
+                            width="60%"
+                            variant="outline"
+                            rounded={10}
+                            onClick={reSelfie}
+                            style={{
+                              border: `2px solid #FFF3E7`,
+                              padding: 5,
+                              backgroundColor: "white",
+                            }}
+                          >
+                            Retake photo
+                          </Button>
+                        </Center>
+                      </FormControl>
+                      <FormControl mt={6}>
+                        <Center>
+                          <button
+                            onClick={onMint}
+                            className="text-sm bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 py-2 px-4 rounded-md text-white"
+                            disabled={isLoading || isMinting}
+                          >
+                            Mint NFT
+                          </button>
+                        </Center>
+                      </FormControl>
+                    </Box>
+                  </Flex>
+                </Box>
+              </Center>
+            </Box>
           </>
         ) : null}
-      </main>
+      </>
     </>
   );
 }

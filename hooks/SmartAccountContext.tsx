@@ -150,7 +150,10 @@ export const SmartAccountProvider = ({
 
       // Store the address as state so we don't need to make async calls
       // later to get it :)
-      const address = await provider.getAddress();
+      console.log({ provider });
+      const address = await provider?.getAddress();
+      console.log({ address });
+
       setSmartAccountAddress(address);
       setSmartAccountReady(true);
     };
