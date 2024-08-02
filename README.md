@@ -1,11 +1,13 @@
-# Privy x Base Paymaster Demo
+# OnlyCam: [FORK] Privy x Base Paymaster Demo
 
 This demo app that showcases a user flow of:
+
 - Signing-in with email/social
 - Getting a smart wallet (ERC-4337)
 - Taking an on-chain action (minting an ERC-721), without requiring the user or the app to pay _any_ gas fees.
 
 This app uses:
+
 - [**Privy**](https://www.privy.io/) for simple onboarding, secure authentication, and powerful embedded wallets
 - [**AccountKit**](https://accountkit.alchemy.com/) for ERC-4337 support and smart contract account functionality
 - [**viem**](https://viem.sh/) for interfacing with wallets and public clients
@@ -17,13 +19,15 @@ This app uses:
 ## Local setup
 
 First, clone a fork of this repository locally and install its dependencies
+
 ```sh
 git clone https://github.com/privy-io/base-paymaster-example.git
 cd base-paymaster-example
-npm i 
+npm i
 ```
 
 Next, create your own `.env` file by running:
+
 ```sh
 cp .env.example .env
 ```
@@ -41,11 +45,12 @@ Lastly, run:
 npm run dev
 ```
 
-and visit `http://localhost:3000` in your browser to see the app in action! You can make edits to the code directly, and updates should appear in your browser. 
+and visit `http://localhost:3000` in your browser to see the app in action! You can make edits to the code directly, and updates should appear in your browser.
 
 ## Copying into your code
 
 If you don't want to use _all_ of the boilerplate in this repository, you can just copy-paste the three following files into your code:
+
 - `hooks/SmartAccountContext.tsx`: React Context that initializes the user's smart account and returns functionality for sending sponsored user operations
 - `lib/user-operations.ts`: helper functions to perform low-level actions on user operations
 - `lib/constants.ts`: a few required constants
@@ -69,6 +74,7 @@ import {SmartAccountProvider} from '../hooks/SmartAccountContext.tsx';
 ```
 
 You can now use the smart account from components/pages in your app, like so:
+
 ```tsx
 import {useSmartAccount} from '../hooks/SmartAccountContext.tsx';
 
@@ -93,6 +99,7 @@ const userOpHash = sendSponsoredUserOperation({
 ```
 
 ## Check out
+
 - `pages/_app.tsx` for how to setup your `PrivyProvider` and wrap your app's pages/components with it
 - `hooks/SmartAccountContext.tsx` for how to initialize smart contract wallets from your users' Privy embedded wallets (EOA)
 - `lib/user-operations.ts` for helper functions to format, populate, hash, and sign user operations
