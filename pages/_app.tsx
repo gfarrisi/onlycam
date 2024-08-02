@@ -61,7 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           },
           defaultChain: baseGoerli,
         }}
-        onSuccess={() => router.push("/dashboard")}
+        onSuccess={() => router.push("/camera")}
       >
         <SmartAccountProvider>
           <ToastContainer position="top-right" />

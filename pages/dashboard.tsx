@@ -32,7 +32,7 @@ export default function DashboardPage() {
   } = useSmartAccount();
   const [myFoto, setMyFoto] = useState<string>("");
   const [fileImage, setFileImage] = useState<File>();
-  const toast = useToast();
+  // const toast = useToast();
 
   type MimeType = "image/jpeg" | "image/png";
 
@@ -66,6 +66,43 @@ export default function DashboardPage() {
     router.push({
       pathname: "/camera",
     });
+  }
+  async function uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch("/api/uploadImage", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      // Assuming the server responds with the URL of the uploaded image
+      // setMyFoto(data.url);
+      toast({
+        title: "Image uploaded successfully to " + data.url,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+      toast({
+        title: "Image upload failed",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   }
 
   //css
@@ -142,6 +179,7 @@ export default function DashboardPage() {
     }
 
     setIsMinting(false);
+    router.push("/camera");
   };
 
   return (
@@ -250,6 +288,7 @@ export default function DashboardPage() {
                         <Center>
                           <button
                             onClick={onMint}
+                            // onClick={() => fileImage && uploadImage(fileImage)}
                             className="text-sm bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 py-2 px-4 rounded-md text-white"
                             disabled={isLoading || isMinting}
                           >

@@ -5,9 +5,9 @@ type Data = {
   name: string;
 };
 
-function getTokenUrlFromTokenId(tokenId: string) {
-  //get from storage
-}
+// function getTokenUrlFromTokenId(tokenId: string) {
+//   //get from storage
+// }
 
 export default function handler(
   req: NextApiRequest,
